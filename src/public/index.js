@@ -4,9 +4,10 @@ function scan() {
     ws.addEventListener("open", (ev) => {
         ws.send("!!OPEN")
     })
+    let final = ""
     ws.addEventListener("message", ev => {
         let data = JSON.parse(ev.data)
-        let final = ""
+        final = ""
         for (const entry of data) {
             final += `<div id="${entry.mac}"><b>${entry.note}</b> [${entry.ip}]<br>`
             final += `<p>${entry.mac} (${entry.vendor})</p>`
@@ -15,9 +16,9 @@ function scan() {
 
             final += `</div></br>`
         }
-        outputContainer.innerHTML = final
     })
     ws.addEventListener("close", ev => {
+        outputContainer.innerHTML = final
         outputContainer.innerHTML = `<h1>Finished scanning.</h1><br>${outputContainer.innerHTML}`
     })
 
