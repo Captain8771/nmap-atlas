@@ -5,7 +5,7 @@ import fsBoring from "node:fs";
 const DATA_FILE = path.join(__dirname, "..", "data.json");
 (async()=>{
     if (fsBoring.existsSync(DATA_FILE)) return
-    await fs.writeFile(DATA_FILE, "{}")
+    await fs.writeFile(DATA_FILE, Buffer.from("{}"))
 })()
 
 async function readFile() {
