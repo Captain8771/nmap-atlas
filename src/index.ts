@@ -19,7 +19,7 @@ server.register(async function (fastify) {
             let found_hosts: Host[] = []
 
             console.log(`Connected to ${req.host}! running nmap!`)
-            const cProcess = exec("nmap 192.168.1.1/24")
+            const cProcess = exec("sudo nmap -sn 192.168.1.1/24")
             cProcess.stdout?.on("data", chunk => {
                 buffer = buffer + chunk.toString()
                 found_hosts = []
