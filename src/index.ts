@@ -2,11 +2,17 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import fastify from "fastify";
 import constants from "./constants";
 // TODO: Migrate to non-sync.
-import { execSync, exec } from "node:child_process";
+import { exec } from "node:child_process";
 import { WebSocket } from "ws";
+import path from "path";
+
 
 const server = fastify()
 server.register(require("@fastify/websocket"));
+server.register(require('@fastify/static'), {
+    root: path.join(__dirname, 'public'),
+    prefix: '/public/', // optional: default '/'
+  })
 
 server.register(async function (fastify) {
     // @ts-expect-error
@@ -46,9 +52,14 @@ server.register(async function (fastify) {
     })
 })
 
-server.get('/ping', async (request: FastifyRequest, reply: FastifyReply) => {
-    const output = execSync("whoami");
-    return output.toString();
+server.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
+    // @ts-expect-error
+    return reply.sendFile('index.html')
+})
+
+server.get("/*", async (req: FastifyRequest, rep: FastifyReply) => {
+    // @ts-expect-error
+    return rep.sendFile(req.url)
 })
 
 
