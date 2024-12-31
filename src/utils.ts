@@ -13,6 +13,9 @@ async function readFile() {
     let content = await handle.read()
     await handle.close()
     let x = content.buffer.entries()
+    for (const key in x) {
+        console.log(key)
+    }
     return JSON.parse(x.toString())
 }
 
