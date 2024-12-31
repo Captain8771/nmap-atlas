@@ -8,7 +8,7 @@ function scan() {
         let data = JSON.parse(ev.data)
         let final = ""
         for (const entry of data) {
-            final += `<div><h3>${entry.ip}</h3><br>`
+            final += `<div><b>${entry.ip}</b><br>`
             final += `<p>${entry.mac} (${entry.vendor})</p></div></br>`
         }
         outputContainer.innerHTML = final
