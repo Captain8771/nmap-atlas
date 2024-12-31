@@ -30,7 +30,6 @@ server.register(async function (fastify) {
             cProcess.stdout?.on("data", async chunk => {
                 reg.lastIndex = 0 // I HATE JS
                 buffer = buffer + chunk.toString()
-                found_hosts = []
                 if (!reg.test(buffer)) {
                     console.log(buffer)
                     return
