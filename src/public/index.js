@@ -9,7 +9,7 @@ function scan() {
         let final = ""
         for (const entry of data) {
             final += `<div><h1>${entry.ip}</h1><br>`
-            final += `<p>${entry.host} (${entry.vendor})</p></div></br>`
+            final += `<p>${entry.mac} (${entry.vendor})</p></div></br>`
         }
         outputContainer.innerHTML = final
     })
