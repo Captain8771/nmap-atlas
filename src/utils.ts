@@ -12,7 +12,8 @@ async function readFile() {
     let handle: fs.FileHandle = await fs.open(DATA_FILE)
     let content = await handle.read()
     await handle.close()
-    return JSON.parse(content.toString())
+    let x = content.buffer.entries()
+    return JSON.parse(x.toString())
 }
 
 async function writeFile(data: object) {
