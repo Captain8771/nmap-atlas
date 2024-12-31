@@ -23,7 +23,10 @@ server.register(async function (fastify) {
             cProcess.stdout?.on("data", chunk => {
                 buffer = buffer + chunk.toString()
                 found_hosts = []
-                if (!reg.test(buffer)) return
+                if (!reg.test(buffer)) {
+                    console.log(buffer)
+                    return
+                }
                 for (let match of reg.exec(buffer)!) {
                     console.log(JSON.stringify(match))
                     found_hosts.push({
