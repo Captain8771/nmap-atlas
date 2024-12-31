@@ -27,12 +27,12 @@ server.register(async function (fastify) {
                     console.log(buffer)
                     return
                 }
-                for (let match of buffer.match(reg)!) {
-                    console.log(JSON.stringify(match))
+                for (let segment of buffer.match(reg)!) {
+                    let match = reg.exec(segment)!;
                     found_hosts.push({
-                        ip: match[0],
-                        mac: match[1],
-                        vendor: match[2]
+                        ip: match[1],
+                        mac: match[2],
+                        vendor: match[3]
                     })
                 }
                 socket.send(JSON.stringify(found_hosts))
