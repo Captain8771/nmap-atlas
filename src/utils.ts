@@ -21,7 +21,6 @@ async function readFile() {
 
 async function writeFile(data: object) {
     let handle: fs.FileHandle = await fs.open(DATA_FILE, "w")
-    await handle.truncate()
     await handle.write(Buffer.from(JSON.stringify(data)))
     await handle.close()
 }
