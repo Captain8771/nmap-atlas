@@ -10,13 +10,13 @@ const DATA_FILE = path.join(__dirname, "..", "data.json");
 
 async function readFile() {
     let handle: fs.FileHandle = await fs.open(DATA_FILE)
-    let content = await handle.read()
-    await handle.close()
-    let x = content.buffer.entries()
-    for (const key in x) {
-        console.log(key)
+    let content = handle.readLines()
+    let x =""
+    for await (const line of content) {
+        x = x + line + "\n"
     }
-    return JSON.parse(x.toString())
+    await handle.close()
+    return JSON.parse(x)
 }
 
 async function writeFile(data: object) {
