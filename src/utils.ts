@@ -1,6 +1,13 @@
 import path from "node:path"
 import fs from "node:fs/promises"
-const DATA_FILE = path.join(__dirname, "..", "data.json")
+import fsBoring from "node:fs";
+
+const DATA_FILE = path.join(__dirname, "..", "data.json");
+(async()=>{
+    if (fsBoring.existsSync(DATA_FILE)) return
+    await fs.writeFile(DATA_FILE, "{}")
+})()
+
 async function readFile() {
     let handle: fs.FileHandle = await fs.open(DATA_FILE)
     let content = await handle.read()
