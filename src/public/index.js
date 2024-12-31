@@ -8,9 +8,13 @@ function scan() {
         let data = JSON.parse(ev.data)
         let final = ""
         for (const entry of data) {
-            final += `<div><h1>${entry.ip}</h1><br>`
+            final += `<div><h3>${entry.ip}</h3><br>`
             final += `<p>${entry.mac} (${entry.vendor})</p></div></br>`
         }
         outputContainer.innerHTML = final
     })
+    ws.addEventListener("close", ev => {
+        outputContainer.innerHTML = `<h1>Finished scanning.</h1><br>${outputContainer.innerHTML}`
+    })
+
 }
