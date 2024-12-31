@@ -23,6 +23,7 @@ server.register(async function (fastify) {
             let buffer = "";
             let reg = /Nmap scan report for ((?:\d{1,3}\.?){4})\nHost is up \(\d+\.\d+s latency\).\s?\nMAC Address: ((?:[A-Z0-9]{2}:?){6})\s\((.+)\)/gm
             let found_hosts: Host[] = []
+            let existing_hosts: string[] = []
 
             console.log(`Connected to ${req.host}! running nmap!`)
             const cProcess = exec("sudo nmap -sn 192.168.1.1/24")
@@ -38,6 +39,8 @@ server.register(async function (fastify) {
                     reg.lastIndex = 0 // I HATE JS
                     console.log(segment)
                     let match = reg.exec(segment)!;
+                    if (existing_hosts.filter(x => x == match[2]).length > 0) continue
+                    existing_hosts.push(match[2])
                     let pData = await utils.persistentData.read(match[2])
                     let note: string;
                     if (pData) {
