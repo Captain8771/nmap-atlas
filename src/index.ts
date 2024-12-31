@@ -27,7 +27,7 @@ server.register(async function (fastify) {
                     console.log(buffer)
                     return
                 }
-                for (let match of reg.exec(buffer)!) {
+                for (let match of buffer.match(reg)!) {
                     console.log(JSON.stringify(match))
                     found_hosts.push({
                         ip: match[0],
