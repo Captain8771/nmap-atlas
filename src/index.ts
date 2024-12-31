@@ -17,7 +17,6 @@ server.register(require('@fastify/static'), {
 server.register(async function (fastify) {
     // @ts-expect-error
     fastify.get("/scan", { websocket: true }, (socket: WebSocket, req: FastifyRequest) => {
-        if (req.headers["atlas-key"] != constants.DEFAULT_AUTH_KEY) return
         socket.on("message", message => {
             if (message.toString() != "!!OPEN") return
             let buffer = "";
