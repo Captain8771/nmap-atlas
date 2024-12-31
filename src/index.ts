@@ -5,6 +5,7 @@ import constants from "./constants";
 import { exec } from "node:child_process";
 import { WebSocket } from "ws";
 import path from "path";
+import utils from "./utils";
 
 
 const server = fastify()
@@ -17,7 +18,7 @@ server.register(require('@fastify/static'), {
 server.register(async function (fastify) {
     // @ts-expect-error
     fastify.get("/scan", { websocket: true }, (socket: WebSocket, req: FastifyRequest) => {
-        socket.on("message", message => {
+        socket.on("message", async message => {
             if (message.toString() != "!!OPEN") return
             let buffer = "";
             let reg = /Nmap scan report for ((?:\d{1,3}\.?){4})\nHost is up \(\d+\.\d+s latency\).\s?\nMAC Address: ((?:[A-Z0-9]{2}:?){6})\s\((.+)\)/gm
@@ -25,7 +26,7 @@ server.register(async function (fastify) {
 
             console.log(`Connected to ${req.host}! running nmap!`)
             const cProcess = exec("sudo nmap -sn 192.168.1.1/24")
-            cProcess.stdout?.on("data", chunk => {
+            cProcess.stdout?.on("data", async chunk => {
                 reg.lastIndex = 0 // I HATE JS
                 buffer = buffer + chunk.toString()
                 found_hosts = []
@@ -37,10 +38,18 @@ server.register(async function (fastify) {
                     reg.lastIndex = 0 // I HATE JS
                     console.log(segment)
                     let match = reg.exec(segment)!;
+                    let pData = await utils.persistentData.read(match[2])
+                    let note: string;
+                    if (pData) {
+                        note = pData.note ?? "Unnamed"
+                    } else {
+                        note = "Unnamed"
+                    }
                     found_hosts.push({
                         ip: match[1],
                         mac: match[2],
-                        vendor: match[3]
+                        vendor: match[3],
+                        note: note
                     })
                 }
                 socket.send(JSON.stringify(found_hosts))
@@ -59,6 +68,18 @@ server.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
 server.get("/*", async (req: FastifyRequest, rep: FastifyReply) => {
     // @ts-expect-error
     return rep.sendFile(req.url)
+})
+
+server.put("/name", async (req: FastifyRequest, rep: FastifyReply) => {
+    let key = req.headers["atlas-key"]
+    let value = req.headers["atlas-value"]
+    if (!key || !value) return rep.status(400).send({error: true, message: "It appears you have made a rookie mistake, rookie! (atlas-key or atlas-value header missing)"})
+    
+    // @ts-ignore
+    let data = await utils.persistentData.read(key)
+    data.note = value
+    // @ts-ignore
+    await utils.persistentData.write(key, data)
 })
 
 
