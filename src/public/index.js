@@ -8,10 +8,10 @@ function scan() {
         let data = JSON.parse(ev.data)
         let final = ""
         for (const entry of data) {
-            final += `<div id="${entry.mac}"><b>${entry.note}</b> [${entry.ip}<br>`
+            final += `<div id="${entry.mac}"><b>${entry.note}</b> [${entry.ip}]<br>`
             final += `<p>${entry.mac} (${entry.vendor})</p>`
             final += `<input type="text" id="${entry.mac}-note" placeholder="Name the device">`
-            final += `<button onclick="noteMAC('${entry.mac}')">`
+            final += `<button onclick="noteMAC('${entry.mac}')">Save name</button>`
 
             final += `</div></br>`
         }
@@ -25,7 +25,7 @@ function scan() {
 
 function noteMAC(mac) {
     let note = document.getElementById(`${mac}-note`)
-    fetch("/note", {
+    fetch("/name", {
         method: "PUT",
         headers: {
             "atlas-key": mac,
