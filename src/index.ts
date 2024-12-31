@@ -21,6 +21,7 @@ server.register(async function (fastify) {
             console.log(`Connected to ${req.host}! running nmap!`)
             const cProcess = exec("sudo nmap -sn 192.168.1.1/24")
             cProcess.stdout?.on("data", chunk => {
+                reg.lastIndex = 0 // I HATE JS
                 buffer = buffer + chunk.toString()
                 found_hosts = []
                 if (!reg.test(buffer)) {
