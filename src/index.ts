@@ -13,8 +13,10 @@ server.register(async function (fastify) {
     fastify.get("/scan", { websocket: true }, (socket: WebSocket, req: FastifyRequest) => {
         if (req.headers["atlas-key"] != constants.DEFAULT_AUTH_KEY) return
         socket.on("open", () => {
+            console.log(`Connected to ${req.host}! running nmap!`)
             const cProcess = exec("nmap 192.168.1.1/24")
             cProcess.stdout?.on("data", chunk => {
+                console.log(chunk.toString())
                 socket.send(chunk.toString())
             })
             cProcess.on("exit", () => socket.close())
@@ -28,7 +30,7 @@ server.get('/ping', async (request: FastifyRequest, reply: FastifyReply) => {
 })
 
 
-server.listen({ port: 8080 }, (err: Error | null, address: string) => {
+server.listen({ host: "0.0.0.0", port: 8080 }, (err: Error | null, address: string) => {
   if (err) {
     console.error(err)
     process.exit(1)
