@@ -12,7 +12,7 @@ async function readFile() {
     let handle: fs.FileHandle = await fs.open(DATA_FILE)
     let content = await handle.read()
     await handle.close()
-    return JSON.parse(content.buffer.toString())
+    return JSON.parse(content.toString())
 }
 
 async function writeFile(data: object) {
