@@ -28,6 +28,7 @@ server.register(async function (fastify) {
                     return
                 }
                 for (let segment of buffer.match(reg)!) {
+                    console.log(segment)
                     let match = reg.exec(segment)!;
                     found_hosts.push({
                         ip: match[1],
