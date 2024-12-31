@@ -30,8 +30,8 @@ export default {
     persistentData: {
         async read(key: string | undefined): Promise<any> {
             let data = await readFile()
-            if (key) return data[key]
-            return data
+            if (key) return data[key] ?? {}
+            return data ?? {}
         },
         async write(key: string, value: any | undefined) {
             let data = await readFile()
