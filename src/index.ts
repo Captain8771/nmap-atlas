@@ -12,7 +12,8 @@ server.register(async function (fastify) {
     // @ts-expect-error
     fastify.get("/scan", { websocket: true }, (socket: WebSocket, req: FastifyRequest) => {
         if (req.headers["atlas-key"] != constants.DEFAULT_AUTH_KEY) return
-        socket.on("open", () => {
+        socket.on("message", message => {
+            if (message.toString() != "!!OPEN") return
             console.log(`Connected to ${req.host}! running nmap!`)
             const cProcess = exec("nmap 192.168.1.1/24")
             cProcess.stdout?.on("data", chunk => {
